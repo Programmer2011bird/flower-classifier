@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import torchvision.datasets as datasets
 
 
-def get_data(Download_dataset:bool=False, Data_Dir:str="./data", BatchSize:int=32) -> tuple:
+def get_data(Download_dataset:bool=False, Data_Dir:str="./data", BatchSize:int=32) -> tuple[DataLoader, DataLoader]:
     transform = transforms.Compose([
         transforms.Resize((128, 128)),
         transforms.TrivialAugmentWide(),
@@ -22,4 +22,4 @@ def get_data(Download_dataset:bool=False, Data_Dir:str="./data", BatchSize:int=3
     test_dataloader: DataLoader = DataLoader(
         dataset=test_dataset, batch_size=BatchSize, shuffle=False)
     
-    return (train_dataloader, test_dataset)
+    return (train_dataloader, test_dataloader)
