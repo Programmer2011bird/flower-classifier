@@ -1,8 +1,15 @@
+from torch.nn import CrossEntropyLoss, Linear
+from torch import argmax, load, optim, inference_mode, save
 import torchvision.models as models
-from torch.nn import Linear
+from tqdm import tqdm
+import train_test
+import dataloader
 
 
-class_names = [
+NUM_CLASSES: int = 102
+EPOCHS: int = 1
+LEARNING_RATE: float = 0.001
+CLASS_NAMES: list[str] = [
     "pink primrose", "hard-leaved pocket orchid", "canterbury bells", "sweet pea",
     "wild geranium", "tiger lily", "moon orchid", "bird of paradise", "monkshood", 
     "globe thistle", "snapdragon", "colt's foot", "king protea", "spear thistle", 
@@ -11,8 +18,8 @@ class_names = [
     "grape hyacinth", "corn poppy", "prince of wales feathers", "stemless gentian", 
     "artichoke", "sweet william", "carnation", "garden phlox", "love in the mist", 
     "mexican aster", "alpine sea holly", "ruby-lipped cattleya", "cape flower", 
-    "great masterwort", "siam tulip", "lenten rose", "barbeton daisy", "daffodil", 
-    "sword lily", "poinsettia", "bolero deep blue", "wallflower", "marigold", "buttercup", 
+    "great masterwort", "siam tulip", "lenten rose", "barbeton daisy", "daffodil",
+    "sword lily", "poinsettia", "bolero deep blue", "wallflower", "marigold", "buttercup",
     "oxeye daisy", "common dandelion", "petunia", "wild pansy", "primula", "sunflower", 
     "pelargonium", "bishop of llandaff", "gaura", "geranium", "orange dahlia", 
     "pink-yellow dahlia", "cautleya spicata", "japanese anemone", "black-eyed susan", 
@@ -25,8 +32,31 @@ class_names = [
     "blanket flower", "trumpet creeper", "blackberry lily", "common tulip", "wild rose"
 ]
 
-NUM_CLASSES:int = 102
-
-MODEL:  models.ResNet = models.resnet18(pretrained=True)
+MODEL: models.ResNet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
 MODEL.fc = Linear(MODEL.fc.in_features, NUM_CLASSES)
 
+TRAIN_LOADER, TEST_LOADER = dataloader.get_data()
+
+# LOSS_FN: CrossEntropyLoss = CrossEntropyLoss()
+# OPTIMIZER: optim.Adam = optim.Adam(MODEL.parameters(), lr=LEARNING_RATE)
+
+# for epoch in tqdm(range(EPOCHS)):
+    # train_loss: int = train_test.train_step(LOSS_FN, OPTIMIZER, MODEL, TRAIN_LOADER)
+    # test_loss: int = train_test.test_step(LOSS_FN, MODEL, TEST_LOADER)
+    # 
+    # save(MODEL.state_dict(), "model.pth")
+ 
+    # print(f"TRAIN LOSS: {train_loss}")
+    # print(f"TRAIN LOSS: {test_loss}")
+
+MODEL.load_state_dict(load("model.pth", weights_only=True))
+MODEL.eval()
+with inference_mode():
+    img, label = next(iter(TEST_LOADER))
+ 
+    Y_PRED = MODEL(img)
+    Y_PRED = argmax(Y_PRED, 1)
+ 
+    print(Y_PRED)
+    print(label)
+    # print(CLASS_NAMES[])
