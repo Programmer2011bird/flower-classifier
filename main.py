@@ -1,13 +1,14 @@
+from torch import argmax, load, optim, inference_mode, save, device
 from torch.nn import CrossEntropyLoss, Linear
-from torch import argmax, load, optim, inference_mode, save
 import torchvision.models as models
+import matplotlib.pyplot as plt
 from tqdm import tqdm
 import train_test
 import dataloader
 
 
 NUM_CLASSES: int = 102
-EPOCHS: int = 1
+EPOCHS: int = 15
 LEARNING_RATE: float = 0.001
 CLASS_NAMES: list[str] = [
     "pink primrose", "hard-leaved pocket orchid", "canterbury bells", "sweet pea",
@@ -49,14 +50,5 @@ TRAIN_LOADER, TEST_LOADER = dataloader.get_data()
     # print(f"TRAIN LOSS: {train_loss}")
     # print(f"TRAIN LOSS: {test_loss}")
 
-MODEL.load_state_dict(load("model.pth", weights_only=True))
-MODEL.eval()
-with inference_mode():
-    img, label = next(iter(TEST_LOADER))
- 
-    Y_PRED = MODEL(img)
-    Y_PRED = argmax(Y_PRED, 1)
- 
-    print(Y_PRED)
-    print(label)
-    # print(CLASS_NAMES[])
+train_test.Visualize_test_Model(MODEL, TEST_LOADER, CLASS_NAMES)
+
