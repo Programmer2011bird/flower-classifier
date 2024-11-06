@@ -42,8 +42,8 @@ def test_step(LOSS_FN:Any, MODEL:nn.Module, DATALOADER:DataLoader):
     
     return Test_loss
 
-def Visualize_test_Model(MODEL:nn.Module, DATALOADER:DataLoader, CLASS_NAMES:list[str]):
-    MODEL.load_state_dict(load("model.pth", weights_only=True, map_location=device('cpu')))
+def Visualize_test_Model(MODEL:nn.Module, DATALOADER:DataLoader, CLASS_NAMES:list[str], FILE: str):
+    MODEL.load_state_dict(load(f"{FILE}", weights_only=True, map_location=device('cpu')))
     MODEL.eval()
 
     with inference_mode():
